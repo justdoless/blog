@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- prettier-ignore -->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=0" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        border-radius: 9px;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body style="width: 281px; height: 430px">
+    <canvas id="canvasWebview" width="281" height="430"></canvas>
+  </body>
+  <script type="text/javascript">
+    const canvasData = {
+      logo: 'https://mpool.unionpay.com/file/00010000/20211215/e8ba94ef-6d1e-4bc5-ba97-d921a957c309.jpg',
+      couponName: '星巴克猫爪杯礼品券',
+      couponName2: [
+        {
+          text: '满',
+          fillStyle: '#333'
+        },
+        {
+          text: '10000',
+          fillStyle: '#E8121A'
+        },
+        {
+          text: '减',
+          fillStyle: '#333'
+        },
+        {
+          text: '20',
+          fillStyle: '#E8121A'
+        }
+      ],
+      couponName3: '适用于:星巴克指定门店',
+      end: '09月19日 12:12:12前领取有效',
+      qrCode: ''
+    };
+
+    document.addEventListener('message', function (event) {
+      const dataFromRN = JSON.parse(event.data);
+      alert(event.data);
+      //   alert(window.postMessage)
+      //   alert(canvas())
+      window.postMessage(canvas(dataFromRN));
+    });
+
+    var screenData = document.documentElement?.getBoundingClientRect();
+    if (screenData.width > 300) {
+      canvas(canvasData);
+    }
+
+    function canvas(canvasData) {
+      var canvas = document.getElementById('canvasWebview');
+      var ctx = getContext(canvas);
+
+      if (ctx) {
+        ctx.save();
+
+        // 圆角矩形白色背景
+        ctx.fillStyle = 'rgba(255,255,255,1)';
+        fillRectRadius(
+          ctx,
+          [
+            { x: 0, y: 0 },
+            { x: 281, y: 0 },
+            { x: 281, y: 430 },
+            { x: 0, y: 430 }
+          ],
+          9
+        );
+        ctx.fill();
+
+        // 半圆角矩形线框
+        ctx.strokeStyle = 'rgba(237,23,31,0.5)';
+        fillHalfRectRadius(
+          ctx,
+          [
+            { x: 15, y: 217 - 9 },
+            { x: 15, y: 15 },
+            { x: 266, y: 15 },
+            { x: 266, y: 217 - 9 }
+          ],
+          7.38
+        );
+        ctx.stroke();
+        // 下半
+        fillHalfRectRadius(
+          ctx,
+          [
+            { x: 266, y: 217 + 9 },
+            { x: 266, y: 415 },
+            { x: 15, y: 415 },
+            { x: 15, y: 217 + 9 }
+          ],
+          7.38
+        );
+        ctx.stroke();
+
+        // 左半圆
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(237,23,31,0.5)';
+        ctx.arc(15, 217, 9, (-1 / 2) * Math.PI, (1 / 2) * Math.PI);
+        ctx.stroke();
+
+        // 右半圆
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(237,23,31,0.5)';
+        ctx.arc(266, 217, 9, (1 / 2) * Math.PI, (3 / 2) * Math.PI);
+        ctx.stroke();
+
+        // 中间虚线
+        ctx.beginPath();
+        ctx.setLineDash([4, 6]);
+        ctx.moveTo(32, 217);
+        ctx.lineTo(249, 217);
+        ctx.stroke();
+
+        // 绘制logo
+        drawImage(ctx, canvasData.logo, 104, 102, 87.8, 24);
+
+        ctx.restore();
+
+        fillText(ctx, canvasData.couponName, 140.5, 138 + 13, {
+          font: 'bold 20px PingFangSC-Semibold',
+          fillStyle: '#333',
+          textAlign: 'center'
+        });
+
+        fillText(ctx, canvasData.couponName2, 140.5, 168 + 12, {
+          font: 'bold 20px PingFangSC-Semibold',
+          fillStyle: '#333',
+          textAlign: 'center'
+        });
+
+        fillText(ctx, canvasData.couponName3, 140.5, 202 + 6, {
+          font: 'bold 12px PingFangSC-Semibold',
+          fillStyle: '#333',
+          textAlign: 'center'
+        });
+
+        fillText(ctx, canvasData.end, 140.5, 229 + 6, {
+          font: '9px PingFangSC-Regular',
+          fillStyle: '#E8121A'
+        });
+      } else {
+        // 不支持礼品卡方式
+      }
+
+      // 获取图片数据流
+      console.log(canvas.toDataURL());
+      return canvas.toDataURL();
+    }
+
+    function fillRectRadius(ctx, rects, radius) {
+      ctx.beginPath();
+      rects.forEach((rect, index) => {
+        if (!index) {
+          ctx.moveTo(rect.x + radius, rect.y);
+        }
+        let nextRect = rects[(index + 1) % rects.length];
+        let next2Rect = rects[(index + 2) % rects.length];
+        ctx.arcTo(nextRect.x, nextRect.y, next2Rect.x, next2Rect.y, radius);
+      });
+    }
+
+    function fillHalfRectRadius(ctx, rects, radius) {
+      ctx.beginPath();
+      rects.forEach((rect, index) => {
+        if (index > 1) {
+          return;
+        }
+        if (!index) {
+          ctx.moveTo(rect.x, rect.y);
+        }
+        let nextRect = rects[(index + 1) % rects.length];
+        let next2Rect = rects[(index + 2) % rects.length];
+        ctx.arcTo(nextRect.x, nextRect.y, next2Rect.x, next2Rect.y, radius);
+
+        if (index === 1) {
+          ctx.lineTo(next2Rect.x, next2Rect.y);
+        }
+      });
+    }
+
+    function fillText(ctx, text, x, y, options) {
+      if (Array.isArray(text)) {
+        // todo 仅仅支持 textAlign:[center,left,start]
+        if (options.textAlign === 'center') {
+          options.textAlign = 'left';
+
+          let preMeasureText;
+          let textLength = 0;
+          // 先遍历拿到总长度
+          text = text.map((txt) => {
+            if (preMeasureText) {
+              x += preMeasureText?.width || 0;
+            }
+
+            preMeasureText = ctx.measureText(txt.text);
+            textLength += preMeasureText?.width || 0;
+
+            return { x, y, ...txt };
+          });
+          // 渲染
+          text.forEach((txt) => {
+            fillText(ctx, txt.text, txt.x - textLength / 2, y, Object.assign(options, txt));
+          });
+        } else {
+          let preMeasureText;
+          text.forEach((txt) => {
+            if (preMeasureText) {
+              // 居左时：修正偏移量
+              x += preMeasureText?.width || 0;
+            }
+
+            preMeasureText = ctx.measureText(txt.text);
+            fillText(ctx, txt.text, x, y, Object.assign(options, txt));
+          });
+        }
+      } else {
+        if (options.font) {
+          ctx.font = options.font;
+        }
+
+        if (options.fillStyle) {
+          ctx.fillStyle = options.fillStyle;
+        }
+
+        if (options.textAlign) {
+          ctx.textAlign = options.textAlign;
+        }
+
+        ctx.fillText(text, x, y);
+      }
+    }
+
+    function drawImage(ctx, imgSource, width, height, x, y) {
+      const image = new Image(width, height); // Using optional size for image
+      image.onload = function () {
+        ctx.drawImage(this, x, y, width, height);
+      }; //
+      image.src = imgSource;
+    }
+
+    function getContext(canvasNode) {
+      if (canvasNode.getContext) {
+        return canvasNode.getContext('2d');
+      }
+    }
+  </script>
+</html>
