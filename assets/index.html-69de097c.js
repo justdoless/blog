@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-3cdc0463","path":"/encrypt/","title":"Encrypt","lang":"zh-CN","frontmatter":{"title":"Encrypt","article":false,"feed":false,"sitemap":false,"seo":false,"head":[]},"headers":[],"git":{},"readingTime":{"minutes":0.03,"words":10},"filePathRelative":null,"copyright":{"author":"justdoless.com@gmail.com"}}');export{e as data};
