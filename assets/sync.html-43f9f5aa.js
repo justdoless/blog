@@ -1,1 +1,0 @@
-import{_ as a,X as t,Y as c,a0 as e,a1 as s}from"./framework-9d02e721.js";const n={},r=e("h1",{id:"数据同步和备份",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#数据同步和备份","aria-hidden":"true"},"#"),s(" 数据同步和备份")],-1),o=[r];function _(d,i){return t(),c("div",null,o)}const l=a(n,[["render",_],["__file","sync.html.vue"]]);export{l as default};
